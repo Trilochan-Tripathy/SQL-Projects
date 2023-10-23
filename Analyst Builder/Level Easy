@@ -1,0 +1,77 @@
+- Determine which Tesla Model has made the most profit.Include all columns with the "profit" column at the end.
+SELECT tesla_model,car_price,cars_sold,production_cost,
+(car_price-production_cost) * cars_sold  as profit 
+FROM tesla_models
+ORDER  BY  profit DESC 
+Limit 1  
+
+
+- If a patient is over the age of 50, cholesterol level of 240 or over, and weight 200 or greater, then they are at high risk of having a heart attack.Write a query to retrieve these patients. Include all columns in your output.
+SELECT  patient_id, age, cholesterol, weight
+FROM patients
+WHERE age >= 50 and cholesterol >=240 and weight >=200
+ORDER BY cholesterol DESC 
+
+- A Computer store is offering a 25% discount for all new customers over the age of 65 or customers that spend more than $200 on their first purchase.The owner wants to know how many customers received that discount since they started the promotion.Write a query to see how many customers received that discount.
+SELECT COUNT(*) as Total_customers
+FROM customers
+WHERE age >=65 or total_purchase >=200
+
+- Write a query that returns all of the stores whose average yearly revenue is greater than one million dollars.Output the store ID and average revenue. Round the average to 2 decimal places.Order by store ID.
+SELECT store_id ,  ROUND(AVG(revenue),2)  as AVG_REVENUE
+FROM stores 
+GROUP BY store_id
+HAVING AVG_REVENUE > 1000000
+ORDER BY store_id 
+
+- Write a query to report the IDs of low quality YouTube videos.A video is considered low quality if the like percentage of the video (number of likes divided by the total number of votes) is less than 55%.Return the result table ordered by ID in ascending order.
+SELECT video_id
+FROM youtube_videos
+WHERE thumbs_up/((thumbs_up+thumbs_down)) * 100 < 55
+ORDER BY video_id ASC 
+
+- Write a Query to return bakery items that contain the word "Chocolate".
+SELECT product_name FROM bakery_items
+WHERE product_name LIKE  '%Chocolate%' 
+
+- Write a query to identify the ids of the three oldest employees.Order output from oldest to youngest.
+SELECT  employee_id  
+FROM employees 
+ORDER BY birth_date ASC 
+LIMIT 3
+
+- Output every possible combination of bread and meats to help Yan in his endeavors.Order by the bread and then meat alphabetically. This is what Yan prefers.
+SELECT bread_name, meat_name
+FROM meat_table
+CROSS JOIN bread_table
+ORDER BY bread_name, meat_name 
+
+- After about 10,000 miles, Electric bike batteries begin to degrade and need to be replaced.Write a query to determine the amount of bikes that currently need to be replaced.
+SELECT COUNT(*) as Total_Bikes 
+FROM bikes 
+WHERE miles > 10000 
+
+
+- Write a query to identify all of the cars that passed inspection.Output should include the owner name and vehicle name. Order by the owner name alphabetically.
+SELECT owner_name,vehicle
+FROM inspections
+WHERE minor_issues <= 3 AND  critical_issues <= 0
+ORDER BY owner_name ASC  
+
+- Return all the candidate IDs that have problem solving skills, SQL experience, knows Python or R, and has domain knowledge.Order output on IDs from smallest to largest.
+SELECT candidate_id
+FROM candidates
+WHERE sql_experience = 'X'
+AND (python = 'X' OR r_programming = 'X')
+AND problem_solving = 'X'
+AND domain_knowledge = 'X'
+ORDER BY candidate_id; 
+
+
+- Using the sales table, calculate how much money they have lost on their rotisserie chickens this year. Round to the nearest whole number.
+SELECT ROUND(SUM(lost_revenue_millions),0) as Total_Loss
+FROM sales  
+
+
+
+
