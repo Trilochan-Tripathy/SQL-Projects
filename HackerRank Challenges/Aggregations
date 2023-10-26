@@ -1,0 +1,80 @@
+- Query a count of the number of cities in CITY having a Population larger than 100000.
+Select Count(*) as no_of_cities
+From CITY 
+Where Population > 100000
+
+- Query the total population of all cities in CITY where District is California.
+Select SUM(population) 
+From CITY 
+Where District = 'California'
+
+- Query the average population of all cities in CITY where District is California.
+Select AVG(population )
+From CITY 
+Where District = 'California'
+
+- Query the average population for all cities in CITY, rounded down to the nearest integer.
+Select Round(Avg(population),0)
+From City
+
+- Query the sum of the populations for all Japanese cities in CITY. The COUNTRYCODE for Japan is JPN.
+Select SUM(population) As Japan_population 
+From CITY 
+Where Countrycode = 'JPN'
+
+- Query the difference between the maximum and minimum populations in CITY.
+Select (Max(population) - MIN(population)) as Difference_population
+From CITY 
+
+- Samantha was tasked with calculating the average monthly salaries for all employees in the EMPLOYEES table, but did not realize her keyboard's  key was broken until after completing the calculation. She wants your help finding the difference between her miscalculation (using salaries with any zeros removed), and the actual average salary.
+Write a query calculating the amount of error (i.e.:  average monthly salaries), and round it up to the next integer.
+select ceil(avg(salary) - 
+avg(replace(salary, 0, ''))) from 
+employees; 
+
+- We define an employee's total earnings to be their monthly  worked, and the maximum total earnings to be the maximum total earnings for any employee in the Employee table. Write a query to find the maximum total earnings for all employees as well as the total number of employees who have maximum total earnings. Then print these values as  space-separated integers.
+select months*salary, count(*) from employee
+group by months*salary
+order by months*salary desc
+limit 1 
+
+- Query the following two values from the STATION table:
+The sum of all values in LAT_N rounded to a scale of  decimal places.
+The sum of all values in LONG_W rounded to a scale of  decimal places. 
+Select ROUND(SUM(LAT_N),2),ROUND(SUM(LONG_W),2)
+From Station 
+
+- Query the sum of Northern Latitudes (LAT_N) from STATION having values greater than  and less than . Truncate your answer to  decimal places.
+Select ROUND(SUM(LAT_N),4)
+From Station 
+Where LAT_N > 38.7880 and LAT_N < 137.2345 
+
+- Query the greatest value of the Northern Latitudes (LAT_N) from STATION that is less than . Truncate your answer to  decimal places.
+Select ROUND(MAX(LAT_N),4)
+From Station 
+Where LAT_N < 137.2345  
+
+- Query the Western Longitude (LONG_W) for the largest Northern Latitude (LAT_N) in STATION that is less than . Round your answer to  decimal places.
+Select ROUND(LONG_W,4)
+From Station 
+Where  LAT_N < 137.2345
+Order By LAT_N DESC
+Limit 1
+
+- Query the smallest Northern Latitude (LAT_N) from STATION that is greater than . Round your answer to  decimal places.
+Select ROUND(MIN(LAT_N),4)
+From Station 
+Where LAT_N > 38.7780
+
+- Query the Western Longitude (LONG_W)where the smallest Northern Latitude (LAT_N) in STATION is greater than . Round your answer to  decimal places.
+Select ROUND(LONG_W,4)
+From Station 
+Where LAT_N > 38.7780 
+Order by LAT_N ASC
+Limit 1
+
+- Query the Manhattan Distance between points  and  and round it to a scale of  decimal places.
+Select Round((Max(LAT_N) - MIN(LAT_N)) + (Max(LONG_W) - MIN(LONG_W)),4)
+From STATION
+
+- 
