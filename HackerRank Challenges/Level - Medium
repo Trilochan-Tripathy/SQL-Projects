@@ -1,0 +1,61 @@
+- Query an alphabetically ordered list of all names in OCCUPATIONS, immediately followed by the first letter of each profession as a parenthetical (i.e.: enclosed in parentheses). For example: AnActorName(A), ADoctorName(D), AProfessorName(P), and ASingerName(S).
+Query the number of ocurrences of each occupation in OCCUPATIONS. Sort the occurrences in ascending order, and output them in the following format:
+SELECT CONCAT(NAME,'(',SUBSTR(OCCUPATION,1,1),')') AS Name
+FROM OCCUPATIONS
+ORDER BY Name;
+SELECT CONCAT('There are a total of ',COUNT(OCCUPATION),' ',LOWER(OCCUPATION),'s.')
+FROM OCCUPATIONS
+GROUP BY OCCUPATION
+ORDER BY COUNT(OCCUPATION), OCCUPATION;
+
+- Pivot the Occupation column in OCCUPATIONS so that each Name is sorted alphabetically and displayed underneath its corresponding Occupation. The output column headers should be Doctor, Professor, Singer, and Actor, respectively.
+CREATE VIEW pq AS (
+    SELECT 
+        CASE WHEN occupation = 'Doctor' THEN name END AS 'Doctor',
+        CASE WHEN occupation = 'Professor' THEN name END AS 'Professor',
+        CASE WHEN occupation = 'Singer' THEN name END AS  'Singer',
+        CASE WHEN occupation = 'Actor' THEN name END AS  'Actor',
+        ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name) as cr
+    FROM occupations
+);
+SELECT MAX(Doctor),MAX(Professor),MAX(Singer),MAX(Actor) FROM pq 
+GROUP BY cr
+
+- Write a query to find the node type of Binary Tree ordered by the value of the node. Output one of the following for each node:
+Root: If node is root node.
+Leaf: If node is leaf node.
+Inner: If node is neither root nor leaf node. 
+SELECT 
+    CASE 
+        WHEN P is null THEN CONCAT(N,' Root')
+        WHEN N IN (SELECT DISTINCT P FROM BST) THEN CONCAT(N,' Inner')
+        ELSE CONCAT(N,' Leaf')
+    END
+FROM BST
+ORDER BY N 
+
+- Write a query to output the start and end dates of projects listed by the number of days it took to complete the project in ascending order. If there is more than one project that have the same number of completion days, then order by the start date of the project.
+SELECT Start_Date, MIN(End_Date) FROM
+(SELECT Start_Date FROM Projects WHERE Start_Date NOT IN (SELECT End_Date FROM Projects)) AS s,
+(SELECT End_Date FROM Projects WHERE End_Date NOT IN (SELECT Start_Date FROM Projects)) AS e
+WHERE Start_Date < End_Date
+GROUP BY Start_Date
+ORDER BY DATEDIFF(MIN(End_Date), Start_Date), Start_Date;
+
+- Write a query to output the names of those students whose best friends got offered a higher salary than them. Names must be ordered by the salary amount offered to the best friends. It is guaranteed that no two students got same salary offer.
+Select S.NAME
+FROM STUDENTS S 
+JOIN FRIENDS F ON S.ID = F.ID
+JOIN PACKAGES P1 ON S.ID = P1.ID
+JOIN PACKAGES P2 ON F.FRIEND_ID = P2.ID
+WHERE P2.SALARY > P1.SALARY
+ORDER BY P2.SALARY;
+
+- Write a query to output all such symmetric pairs in ascending order by the value of X. List the rows such that X1 ≤ Y1.
+SELECT X, Y FROM FUNCTIONS F1
+    WHERE EXISTS(SELECT * FROM FUNCTIONS F2 WHERE F2.Y = F1.X
+    AND F2.X = F1.Y AND F2.X > F1.X) AND (X != Y)
+UNION
+SELECT X,Y FROM FUNCTIONS F1 WHERE X = Y AND 
+    ((SELECT COUNT(*) FROM FUNCTIONS WHERE X = F1.X AND Y = F1.X) > 1)
+      ORDER BY X;
