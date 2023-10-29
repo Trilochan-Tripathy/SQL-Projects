@@ -1,1 +1,51 @@
+- Assume you're given a table Twitter tweet data, write a query to obtain a histogram of tweets posted per user in 2022. Output the tweet count per user as the bucket and the number of Twitter users who fall into that buckeIn other words, group the users by the number of tweets they posted in 2022 and count the number of users in each group.
+WITH total_tweets AS (
+  SELECT 
+    user_id, 
+    COUNT(tweet_id) AS tweet_count_per_user
+  FROM tweets 
+  WHERE tweet_date BETWEEN '2022-01-01' 
+    AND '2022-12-31' 
+  GROUP BY user_id) 
+SELECT 
+  tweet_count_per_user AS tweet_bucket, 
+  COUNT(user_id) AS users_num 
+FROM total_tweets 
+GROUP BY tweet_count_per_user;
+
+- Write a query to list the candidates who possess all of the required skills for the job. Sort the output by candidate ID in ascending order.
+SELECT candidate_id
+FROM candidates
+WHERE skill IN ('Python','Tableau','PostgreSQL') 
+GROUP BY candidate_id
+HAVING COUNT(skill) = 3
+ORDER BY candidate_id ASC  
+
+
+- Write a query to return the IDs of the Facebook pages that have zero likes. The output should be sorted in ascending order based on the page IDs.
+SELECT P.page_id 
+FROM pages P LEFT JOIN  page_likes L   
+ON P.page_id = L.page_id 
+WHERE liked_date is NULL
+ORDER BY P.page_id  ASC
+
+- Tesla is investigating production bottlenecks and they need your help to extract the relevant data. Write a query to determine which parts have begun the assembly process but are not yet finished.
+SELECT part,assembly_step
+FROM parts_assembly
+WHERE finish_date is NULL
+
+- Write a query that calculates the total viewership for laptops and mobile devices where mobile is defined as the sum of tablet and phone viewership. Output the total viewership for laptops as laptop_reviews and the total viewership for mobile devices as mobile_views.
+SELECT 
+  SUM(CASE WHEN device_type = 'laptop' THEN 1 ELSE 0 END) AS laptop_views, 
+  SUM(CASE WHEN device_type IN ('tablet', 'phone') THEN 1 ELSE 0 END) AS mobile_views 
+FROM viewership;
+
+- Given a table of Facebook posts, for each user who posted at least twice in 2021, write a query to find the number of days between each user’s first post of the year and last post of the year in the year 2021. Output the user and number of the days between each user's first and last post.
+SELECT 
+	user_id, 
+    MAX(post_date::DATE) - MIN(post_date::DATE) AS days_between
+FROM posts
+WHERE DATE_PART('year', post_date::DATE) = 2021 
+GROUP BY user_id
+HAVING COUNT(post_id)>1; 
 
