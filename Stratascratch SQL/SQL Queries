@@ -103,6 +103,46 @@ WHERE `sector` = 'Financials'
 ORDER BY `profits` DESC
 LIMIT 1
 
+- Count the number of user events performed by MacBookPro users.Output the result along with the event name.Sort the result based on the event count in the descending order.
+select event_name , Count(event_name) as macbook_users 
+from playbook_events
+Where device = 'macbook pro'
+group by event_name
+order by macbook_users DESC
+
+- Find the average number of bathrooms and bedrooms for each city’s property types. Output the result along with the city name and the property type.
+select city , property_type ,
+    avg(bathrooms) as Avg_Bathrooms,
+    avg(bedrooms) as Avg_bedrooms
+ from airbnb_search_details
+ group by city , property_type
+
+- You have been asked to find the 5 most lucrative products in terms of total revenue for the first half of 2022 (from January to June inclusive).
+Output their IDs and the total revenue.
+select product_id ,SUM(cost_in_dollars *units_sold ) as Total_revenue
+from online_orders
+Where Month(date) >=1 and Month(date) <=6
+Group by product_id 
+Order by Total_revenue DESC
+Limit 5
+
+- Write a query that will calculate the number of shipments per month. The unique key for one shipment is a combination of shipment_id and sub_id. Output the year_month in format YYYY-MM and the number of shipments in that month
+select count(shipment_id), DATE_FORMAT(shipment_date, '%Y-%m')  date_ym
+from amazon_shipment
+group by date_ym;
+
+- Write a query that returns the number of unique users per client per month
+select client_id,
+MONTH(time_id) as month,
+count(distinct user_id)
+from fact_events
+group by client_id, month
+order by client_id
+
+
+
+
+
 
 
 
