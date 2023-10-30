@@ -66,5 +66,38 @@ WHERE l.title = r.title
 AND l.description = r.description 
 AND l.job_id <> r.job_id 
 
+- Write a query to retrieve the top three cities that have the highest number of completed trade orders listed in descending order. Output the city name and the corresponding number of completed trade orders.
+SELECT u.city , COUNT(order_id) as no_of_traders
+FROM trades t inner join users u 
+ON t.user_id = u.user_id
+WHERE status = 'Completed'
+GROUP BY u.city
+ORDER BY no_of_traders DESC
+LIMIT 3
+
+- write a query to retrieve the average star rating for each product, grouped by month. The output should display the month as a numerical value, product ID, and average star rating rounded to two decimal places. Sort the output first by month and then by product ID.
+SELECT Date_part('Month',submit_date::Date) as MONTH_NO , product_id  ,
+ROUND(AVG(stars),2) as AVG_Ratings
+FROM reviews 
+GROUP BY product_id , MONTH_NO
+ORDER BY MONTH_NO , product_id  
+
+- Write a query to calculate the click-through rate (CTR) for the app in 2022 and round the results to 2 decimal places.
+SELECT app_id,ROUND(100.0 *
+    COUNT(CASE WHEN event_type = 'click' THEN 1 ELSE NULL END) /
+    COUNT(CASE WHEN event_type = 'impression' THEN 1 ELSE NULL END), 2)  AS ctr_rate
+FROM events 
+WHERE DATE_PART('YEAR',timestamp::DATE) = 2022
+GROUP BY app_id 
+
+- Write a query to display the user IDs of those who did not confirm their sign-up on the first day, but confirmed on the second day.
+SELECT user_id FROM emails e  
+JOIN texts t ON e.email_id = t.email_id
+WHERE signup_action = 'Confirmed' 
+AND 
+t.action_date = DATE(e.signup_date)+1
+
+- 
+
 
 
