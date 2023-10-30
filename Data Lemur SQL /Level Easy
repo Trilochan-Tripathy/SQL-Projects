@@ -47,5 +47,24 @@ SELECT
 FROM posts
 WHERE DATE_PART('year', post_date::DATE) = 2021 
 GROUP BY user_id
-HAVING COUNT(post_id)>1; 
+HAVING COUNT(post_id)>1;  
+
+
+- Write a query to identify the top 2 Power Users who sent the highest number of messages on Microsoft Teams in August 2022. Display the IDs of these 2 users along with the total number of messages they sent. Output the results in descending order based on the count of the messages.
+SELECT sender_id , COUNT(sender_id) as No_Of_msgs
+FROM messages
+WHERE Date_part('Year',sent_date::DATE) = 2022 and Date_part('Month',sent_date::DATE) = 8
+GROUP BY sender_id
+ORDER BY No_Of_msgs DESC  
+LIMIT 2
+
+- Write a query to retrieve the count of companies that have posted duplicate job listings.
+SELECT count(DISTINCT(l.company_id))
+FROM job_listings as l
+LEFT JOIN job_listings AS r ON l.company_id = r.company_id
+WHERE l.title = r.title 
+AND l.description = r.description 
+AND l.job_id <> r.job_id 
+
+
 
