@@ -95,9 +95,41 @@ SELECT user_id FROM emails e
 JOIN texts t ON e.email_id = t.email_id
 WHERE signup_action = 'Confirmed' 
 AND 
-t.action_date = DATE(e.signup_date)+1
+t.action_date = DATE(e.signup_date)+1 
 
-- 
+- Write a query that outputs the name of each credit card and the difference in the number of issued cards between the month with the highest issuance cards and the lowest issuance. Arrange the results based on the largest disparity.
+SELECT card_name , 
+(MAX(issued_amount) - MIN(issued_amount) ) as AMT 
+FROM monthly_cards_issued
+GROUP BY card_name
+ORDER BY AMT DESC 
+
+- You're trying to find the mean number of items per order on Alibaba, rounded to 1 decimal place using tables which includes information on the count of items in each order (item_count table) and the corresponding number of orders for each item count (order_occurrences table).
+SELECT ROUND(
+SUM(item_count::DECIMAL*order_occurrences)
+/SUM(order_occurrences),1) AS mean
+FROM items_per_order
+
+- Write a query to find the top 3 most profitable drugs sold, and how much profit they made. Assume that there are no ties in the profits. Display the result from the highest to the lowest total profit.
+SELECT drug , (total_sales - cogs ) as Profit 
+FROM pharmacy_sales
+ORDER BY Profit DESC  
+LIMIT 3 
+
+- Write a query to identify the manufacturers associated with the drugs that resulted in losses for CVS Health and calculate the total amount of losses incurred.Output the manufacturer's name, the number of drugs associated with losses, and the total losses in absolute value. Display the results sorted in descending order with the highest losses displayed at the top.
+SELECT manufacturer , COUNT(drug) as No_Of_Drugs , ABS(SUM(total_sales-cogs)) as Loss_Amt
+FROM pharmacy_sales
+WHERE total_sales-cogs <=0
+GROUP BY manufacturer
+ORDER BY Loss_Amt DESC 
+
+- Write a query to calculate the total drug sales for each manufacturer. Round the answer to the nearest million and report your results in descending order of total sales. In case of any duplicates, sort them alphabetically by the manufacturer name.
+Since this data will be displayed on a dashboard viewed by business stakeholders, please format your results as follows: "$36 million".
+SELECT manufacturer , 
+Concat('$',ROUND(SUM(total_sales)/1000000,0),' ','million') As Sales
+FROM pharmacy_sales
+GROUP BY manufacturer
+ORDER BY SUM(total_sales) DESC , manufacturer ASC  
 
 
 
