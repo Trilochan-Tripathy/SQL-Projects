@@ -1,0 +1,45 @@
+- Write a solution to find the ids of products that are both low fat and recyclable.Return the result table in any order.
+Select product_id From Products
+Where low_fats = 'Y' and recyclable = "Y"
+
+- Find the names of the customer that are not referred by the customer with id = 2.
+Select name From customer
+Where referee_id <> 2 or referee_id is NULL
+
+- Write a solution to find the name, population, and area of the big countries.
+Select name , population , area From World
+Where area >= 3000000 or population >= 25000000 
+
+- Write a solution to find all the authors that viewed at least one of their own articles.
+Select Distinct v1.author_id as id
+From Views v1 inner join Views v2
+on v1.article_id = v2.article_id
+Where v1.author_id = v2.viewer_id
+Order by v1.author_id ASC 
+
+- Write a solution to find the IDs of the invalid tweets. The tweet is invalid if the number of characters used in the content of the tweet is strictly greater than 15.
+Select tweet_id From Tweets
+Where LENGTH(content) > 15 
+
+- Write a solution to show the unique ID of each user, If a user does not have a unique ID replace just show null.
+select eu.unique_id as unique_id, e.name as name
+from Employees e left join EmployeeUNI eu on e.id = eu.id  
+
+- Write a solution to report the product_name, year, and price for each sale_id in the Sales table.Return the resulting table in any order.
+Select product_name , year , price
+From Product P inner Join Sales S 
+On P.product_id = S.product_id
+
+- Write a solution to find the IDs of the users who visited without making any transactions and the number of times they made these types of visits. 
+SELECT customer_id, 
+COUNT(visit_id) AS count_no_trans 
+FROM visits
+WHERE visit_id NOT IN (
+SELECT visit_id 
+FROM transactions
+)
+GROUP BY customer_id
+
+- Write a solution to find all dates' Id with higher temperatures compared to its previous dates (yesterday).
+select w1.id from Weather w1 join Weather w2 
+where datediff(w1.recordDate,w2.recordDate)=1 And w2.temperature<w1.temperature
