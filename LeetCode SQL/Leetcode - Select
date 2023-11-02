@@ -1,0 +1,22 @@
+- Write a solution to find the ids of products that are both low fat and recyclable.Return the result table in any order.
+Select product_id From Products
+Where low_fats = 'Y' and recyclable = "Y"
+
+- Find the names of the customer that are not referred by the customer with id = 2.
+Select name From customer
+Where referee_id <> 2 or referee_id is NULL
+
+- Write a solution to find the name, population, and area of the big countries.
+Select name , population , area From World
+Where area >= 3000000 or population >= 25000000 
+
+- Write a solution to find all the authors that viewed at least one of their own articles.
+Select Distinct v1.author_id as id
+From Views v1 inner join Views v2
+on v1.article_id = v2.article_id
+Where v1.author_id = v2.viewer_id
+Order by v1.author_id ASC 
+
+- Write a solution to find the IDs of the invalid tweets. The tweet is invalid if the number of characters used in the content of the tweet is strictly greater than 15.
+Select tweet_id From Tweets
+Where LENGTH(content) > 15 
