@@ -1,0 +1,36 @@
+- Weather Analysis
+There is a tale with daily weather data over the last 6 months of 2020, including the maximum, minimum, and average temperatures.
+Write a query that gives month, monthly maximum, monthly minimum, monthly average temperatures for the six months.
+SELECT MONTH(record_date), MAX(data_value) AS max, MIN(data_value) AS min,
+       round(AVG(CASE WHEN data_type = 'avg' then data_value END)) AS avg
+FROM temperature_records
+WHERE MONTH(record_date) BETWEEN 7 AND 12
+GROUP BY MONTH(record_date)
+ORDER BY MONTH(record_date) 
+
+- Winner Chart analysis 
+There were a number of contests where participants each made number of attempts. The attempt with the highest score is only one considered. Write a query to list the contestants ranked in the top 3 for each contest. If multiple contestants have the same score in each contest, they are at the same rank.
+WITH 
+ranked_scores AS (
+    SELECT 
+        event_id,
+        participant_name,
+        score,
+        DENSE_RANK() OVER (
+            PARTITION BY event_id 
+            ORDER BY score DESC
+        ) as ranking
+    FROM (
+        SELECT event_id, participant_name, MAX(score) as score
+        FROM scoretable
+        GROUP BY event_id, participant_name
+    ) t
+)
+SELECT
+    event_id,
+    GROUP_CONCAT(CASE WHEN ranking = 1 THEN participant_name END ORDER BY participant_name) as first,
+    GROUP_CONCAT(CASE WHEN ranking = 2 THEN participant_name END ORDER BY participant_name) as second,
+    GROUP_CONCAT(CASE WHEN ranking = 3 THEN participant_name END ORDER BY participant_name) as third
+FROM ranked_scores
+GROUP BY event_id
+ORDER BY event_id; 
