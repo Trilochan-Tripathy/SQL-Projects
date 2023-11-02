@@ -1,0 +1,15 @@
+- Write a solution to calculate the number of unique subjects each teacher teaches in the university. 
+Select teacher_id , Count(Distinct subject_id) as cnt 
+From Teacher 
+Group by teacher_id
+
+- Write a solution to find the daily active user count for a period of 30 days ending 2019-07-27 inclusively. A user was active on someday if they made at least one activity on that day.
+select activity_date as day, count(distinct user_id) as active_users
+from Activity
+where (activity_date >"2019-06-27" and activity_date <="2019-07-27") 
+group by activity_date;
+
+- Write a solution to select the product id, year, quantity, and price for the first year of every product sold.
+SELECT S.product_id, S.year as first_year, S.quantity, S.price
+FROM Sales S
+WHERE S.year IN (SELECT MIN(year) FROM Sales S1 WHERE S.product_id = S1.product_id)
