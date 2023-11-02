@@ -1,0 +1,59 @@
+- Write a solution to report the movies with an odd-numbered ID and a description that is not "boring".Return the result table ordered by rating in descending order.
+Select * From Cinema 
+Where description not like '%boring%' and id%2 != 0
+Order by rating DESC
+
+- Write a solution to find the average selling price for each product. average_price should be rounded to 2 decimal places.
+select p.product_id,round(sum(p.price*u.units)/sum(u.units),2) as average_price 
+from Prices p 
+left join 
+UnitsSold u 
+on p.product_id=u.product_id 
+where u.purchase_date>=p.start_date and u.purchase_date<=p.end_date 
+group by product_id; 
+
+- Write an SQL query that reports the average experience years of all the employees for each project, rounded to 2 digits.
+Select p.project_id , Round(AVG(e.experience_years),2) as average_years
+From Project p inner join Employee e 
+on p.employee_id = e.employee_id
+Group by p.project_id
+
+- Write a solution to find the percentage of the users registered in each contest rounded to two decimals.Return the result table ordered by percentage in descending order. In case of a tie, order it by contest_id in ascending order.
+SELECT contest_id ,ROUND(COUNT(DISTINCT user_id) / (SELECT COUNT(user_id)FROM Users) *100,2) AS percentage 
+FROM Register  
+GROUP BY contest_id 
+ORDER BY percentage DESC , contest_id 
+
+- Write a solution to find each query_name, the quality and poor_query_percentage.Both quality and poor_query_percentage should be rounded to 2 decimal places.
+select query_name, 
+ROUND(AVG(rating / position), 2) AS quality,
+round(SUM(rating<3)/count(query_name)*100,2) as poor_query_percentage 
+from queries
+group by query_name;
+
+- Write an SQL query to find for each month and country, the number of transactions and their total amount, the number of approved transactions and their total amount.
+SELECT
+  DATE_FORMAT(trans_date, '%Y-%m') AS month,
+  country,
+  COUNT(*) AS trans_count,
+  SUM(IF(state = 'approved', 1, 0)) AS approved_count,
+  SUM(amount) AS trans_total_amount,
+  SUM(IF(state = 'approved', amount, 0)) AS approved_total_amount
+FROM Transactions
+GROUP BY DATE_FORMAT(trans_date, '%Y-%m'), country; 
+
+- Write a solution to find the percentage of immediate orders in the first orders of all customers, rounded to 2 decimal places.
+select round(sum(if(order_date = customer_pref_delivery_date, 1, 0)) / count(*) * 100, 2) as immediate_percentage from Delivery
+where (customer_id, order_date) in
+(
+    Select customer_id, min(order_date) from Delivery group by customer_id
+)
+
+- Write a solution to report the fraction of players that logged in again on the day after the day they first logged in, rounded to 2 decimal places. In other words, you need to count the number of players that logged in for at least two consecutive days starting from their first login date, then divide that number by the total number of players.
+SELECT ROUND(SUM(login)/COUNT(DISTINCT player_id), 2) AS fraction
+FROM (
+  SELECT
+    player_id,
+    DATEDIFF(event_date, MIN(event_date) OVER(PARTITION BY player_id)) = 1 AS login
+  FROM Activity
+) AS t 
