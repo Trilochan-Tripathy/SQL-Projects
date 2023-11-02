@@ -1,0 +1,57 @@
+- Write a solution to report the product_name, year, and price for each sale_id in the Sales table.Return the resulting table in any order.
+Select product_name , year , price
+From Product P inner Join Sales S 
+On P.product_id = S.product_id
+
+- Write a solution to find the IDs of the users who visited without making any transactions and the number of times they made these types of visits. 
+SELECT customer_id, 
+COUNT(visit_id) AS count_no_trans 
+FROM visits
+WHERE visit_id NOT IN (
+SELECT visit_id 
+FROM transactions
+)
+GROUP BY customer_id
+
+- Write a solution to find all dates' Id with higher temperatures compared to its previous dates (yesterday).
+select w1.id from Weather w1 join Weather w2 
+where datediff(w1.recordDate,w2.recordDate)=1 And w2.temperature<w1.temperature 
+
+-  Write a solution to find the average time each machine takes to complete a process.
+SELECT a.machine_id,
+ROUND(
+AVG(CASE WHEN a.activity_type = 'end' THEN a.timestamp END) -
+AVG(CASE WHEN a.activity_type = 'start' THEN a.timestamp END), 3
+) AS processing_time
+FROM
+activity a
+GROUP BY
+a.machine_id;
+
+- Write a solution to report the name and bonus amount of each employee with a bonus less than 1000.
+Select e.name , b.bonus 
+From Employee e left join Bonus b
+on e.empId = b.empId
+Where bonus < 1000 or bonus is NULL
+
+- Write a solution to find the number of times each student attended each exam.Return the result table ordered by student_id and subject_name.
+SELECT Students.student_id, Students.student_name, Subjects.subject_name,
+COUNT(Examinations.subject_name) AS attended_exams
+FROM Students
+JOIN Subjects
+LEFT JOIN Examinations
+ON Students.student_id = Examinations.student_id
+AND Subjects.subject_name = Examinations.subject_name
+GROUP BY Students.student_id, Subjects.subject_name
+ORDER BY student_id ASC, subject_name ASC 
+
+- Write a solution to find managers with at least five direct reports.
+Select name from Employee 
+Where id IN (SELECT managerId 
+    FROM Employee 
+    GROUP BY managerId 
+    HAVING COUNT(managerId) >= 5 )
+
+- Write a solution to find the confirmation rate of each user. 
+select s.user_id, round(avg(if(c.action="confirmed",1,0)),2) as confirmation_rate
+from Signups as s left join Confirmations as c on s.user_id= c.user_id group by user_id;
