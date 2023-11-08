@@ -1,0 +1,162 @@
+-- Table - Sales data 
+Select * From dbo.SalesData 
+
+-- Data Cleaning '
+-- Rounding up all decimals to 2
+Update dbo.SalesData
+Set Tax_5 = ROUND(Tax_5,2) 
+
+Update dbo.SalesData 
+Set Total = ROUND(Total,2)
+
+Update dbo.SalesData
+Set cogs = ROUND(cogs,2)
+
+Update dbo.SalesData
+Set gross_margin_percentage = ROUND(gross_margin_percentage,2)
+
+Update dbo.SalesData
+Set gross_income = ROUND(gross_income,2)
+
+Update dbo.SalesData
+Set Rating = ROUND(Rating,1)
+
+-- Add new Column Month_name 
+Alter Table dbo.SalesData
+Add Month_Name Varchar(50) 
+
+Update dbo.SalesData
+Set Month_Name = MONTH(Date)
+
+-- Add New column time_of_day 
+Alter table dbo.SalesData
+add time_of_day Varchar(50)
+
+update dbo.SalesData 
+set time_of_day = (CASE
+		WHEN 'time' BETWEEN "00:00:00" AND "12:00:00" THEN "Morning"
+        WHEN 'time' BETWEEN "12:01:00" AND "16:00:00" THEN "Afternoon"
+        ELSE "Evening"
+    END)
+
+
+
+
+
+
+
+
+-- How many unique cities does the data have?
+Select * From dbo.SalesData 
+Select Distinct City    -- Distinct clause used to find unique values 
+From SalesData
+
+-- In which city is each branch?
+Select * From dbo.SalesData 
+SELECT DISTINCT city, branch
+FROM SalesData
+
+-- How many unique product lines does the data have?
+Select * From dbo.SalesData 
+Select DISTINCT Product_line
+From SalesData
+
+-- What is the most selling product line ?
+Select * From dbo.SalesData 
+Select TOP 1 Product_line , SUM(Quantity) as Total_Quantity
+From SalesData
+Group By Product_line
+Order By Total_Quantity DESC 
+
+-- What is the total revenue by month  ? 
+Select * From dbo.SalesData 
+Select SUM(Total) as total_rev , Month_Name
+From dbo.SalesData 
+Group By Month_Name
+
+-- What month had the largest COGS?
+Select * From dbo.SalesData
+Select  top 1 SUM(cogs) as Total_cogs , Month_Name
+From dbo.SalesData
+Group by Month_Name 
+Order by Total_cogs DESC 
+
+
+-- What product line had the largest revenue?
+Select * From dbo.SalesData
+Select TOP 1  Product_line , SUM(Total) as Revenue
+From dbo.SalesData
+Group by Product_line
+Order by revenue DESC
+
+-- What is the city with the largest revenue?
+Select * From dbo.SalesData
+Select TOP 1 City , SUM(Total)as Revenue
+From dbo.SalesData
+Group by City 
+Order by revenue DESC
+
+-- What product line had the largest VAT?
+Select * From dbo.SalesData
+Select SUM(Tax_5) as VAT , Product_line
+From dbo.SalesData
+Group by Product_line
+Order by VAT DESC
+
+-- Fetch each product line and add a column to those product -- line showing "Good", "Bad". Good if its greater than average sales
+Select * From dbo.SalesData
+Select AVG(Total) from dbo.SalesData
+
+Select Product_line ,
+	(case 
+		when AVG(Total) > 322.9668 then 'Good'
+		Else 'Bad'
+		End ) As Sales_Remark 
+From dbo.SalesData
+Group by Product_line
+
+-- Which branch sold more products than average product sold?
+Select * From dbo.SalesData
+Select Branch , SUM(Quantity) as Total_Products
+From dbo.SalesData
+Group by Branch
+Having SUM(quantity) > (SELECT AVG(quantity) FROM dbo.SalesData)
+
+-- What is the most common product line by gender
+Select * From dbo.SalesData
+SELECT gender,product_line,
+    COUNT(gender) AS total_cnt
+FROM dbo.SalesData
+GROUP BY gender, product_line
+ORDER BY total_cnt DESC 
+
+-- What is the average rating of each product line
+Select * From dbo.SalesData
+Select Product_line , Round(AVG(Rating),2) AVG_Rating
+From dbo.SalesData
+Group by Product_line
+order by AVG_Rating DESC
+
+-- How many unique customer types does the data have?
+Select * From dbo.SalesData
+Select DISTINCT Customer_type
+From dbo.SalesData
+
+-- How many unique payment methods does the data have?
+Select * From dbo.SalesData
+Select DISTINCT Payment
+From dbo.SalesData
+
+-- What is the most common customer type?
+Select * From dbo.SalesData
+Select COUNT(Customer_type) as Type_of_customer , Customer_type
+From dbo.SalesData
+Group by Customer_type
+Order by Type_of_customer DESC
+
+-- What is the gender of most of the customers?
+Select * From dbo.SalesData
+Select Gender , COUNT(Gender) as Count
+From dbo.SalesData
+Group by Gender
+Order by Count DESC
